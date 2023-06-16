@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Account/presentation/screens/account_screen.dart';
+import 'package:my_ecommerce/Address/blocs/addresses_bloc/addresses_bloc.dart';
+import 'package:my_ecommerce/Address/blocs/location_bloc/location_bloc.dart';
+import 'package:my_ecommerce/Cart/blocs/cart_bloc/cart_bloc.dart';
+import 'package:my_ecommerce/Cart/presentation/screens/cart_screen.dart';
 import 'package:my_ecommerce/Home/blocs/new_products_bloc/newly_added_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/popular_bloc/popular_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/products_ads_bloc/products_ads_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/top_products_bloc/top_products_bloc.dart';
 import 'package:my_ecommerce/Home/presentation/screens/home_screen.dart';
+import 'package:my_ecommerce/Order/blocs/order_bloc/order_bloc.dart';
 import 'package:my_ecommerce/Primary/blocs/categories_bloc/categories_bloc.dart';
-import 'package:my_ecommerce/Search/bloc/search_bloc.dart';
+import 'package:my_ecommerce/Search/blocs/filter_bloc/filter_bloc.dart';
+import 'package:my_ecommerce/Search/blocs/search_bloc/search_bloc.dart';
 import 'package:my_ecommerce/Search/presentation/screens/search_screen.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
+import 'package:my_ecommerce/Wishlist/bloc/wishlist_bloc.dart';
 
 class PrimaryScreen extends StatefulWidget {
   const PrimaryScreen({super.key});
@@ -24,42 +31,48 @@ class _PrimaryScreenState extends State<PrimaryScreen>
   late final TabController controller;
   int currentIndex = 0;
   final Map<String, Widget> screens = {};
-  final CategoriesBloc categoriesBloc = CategoriesBloc()..add(LoadCategories());
   final SearchBloc _searchBloc = SearchBloc()..add(FetchSearchHistory());
-  
+   final LocationBloc locationBloc = LocationBloc()
+    ..add(DetectCurrentLocation());
   @override
   void initState() {
     screens.addAll({
-    'Home': 
-    HomeScreen(
-      onSearch: (term) {
-          screens.update('Search', (widget) => SearchScreen(
-            searchTerm: term,
-            ));
+      'Home': HomeScreen(
+        onSearch: (term) {
+          screens.update(
+              'Search',
+              (widget) => SearchScreen(
+                    searchTerm: term,
+                  ));
 
           _searchBloc.add(FetchSearchData(searchTxt: term));
-           goToPage(1);
+          goToPage(1);
         },
-    ),
-    'Search': const SearchScreen(),
-    'Cart': Container(),//CartScreen(
-      //fromHome: true,
-    //),
-    'More': const AccountScreen(),
-  });
+      ),
+      'Search': const SearchScreen(),
+      'Cart': CartScreen(
+        fromHome: true,
+      ),
+      'More': const AccountScreen(),
+    });
     controller = TabController(length: 4, vsync: this);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //context.read<DealBloc>().add(FetchDeal());
+      context.read<CategoriesBloc>().add(LoadCategories());
+      context.read<FilterBloc>().add(FetchFilterData());
+      context.read<WishlistBloc>().add(GetWishList());
+      context.read<CartBloc>().add(GetCart());
+      context.read<AddressesBloc>().add(GetAllAddresses());
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final cartState = context.watch<CartBloc>().state;
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CategoriesBloc>(
-          create: (context) => categoriesBloc,
+        BlocProvider<LocationBloc>(
+          create: (context) => locationBloc,
         ),
         BlocProvider<NewlyAddedBloc>(
           create: (context) => NewlyAddedBloc()..add(FetchNewlyAdded()),
@@ -74,32 +87,34 @@ class _PrimaryScreenState extends State<PrimaryScreen>
           create: (context) => _searchBloc,
         ),
         BlocProvider<ProductsAdsBloc>(
-            create: (context) => ProductsAdsBloc()..add(FetchAds()),
-          ),
+          create: (context) => ProductsAdsBloc()..add(FetchAds()),
+        ),
       ],
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(
-            screens.keys.elementAt(currentIndex),
-            style: TextStyle(
-              color: AppColors.PRIMARY_COLOR,
-            ),
-          ),
-          centerTitle: true,
-          actions: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
-              child: CircleAvatar(
-                child: Icon(Icons.person_rounded),
-                backgroundColor: Colors.grey[300],
-              ),
-            ),
-          ],
-        ),
+        appBar: currentIndex < 2
+            ? AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Text(
+                  screens.keys.elementAt(currentIndex),
+                  style: TextStyle(
+                    color: AppColors.PRIMARY_COLOR,
+                  ),
+                ),
+                centerTitle: true,
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8.0),
+                    child: CircleAvatar(
+                      child: Icon(Icons.person_rounded),
+                      backgroundColor: Colors.grey[300],
+                    ),
+                  ),
+                ],
+              )
+            : null,
         body: WillPopScope(
           onWillPop: onWillPop,
           child: TabBarView(
@@ -150,8 +165,11 @@ class _PrimaryScreenState extends State<PrimaryScreen>
                       : Colors.grey,
                 ),
               ),
-              badgeCount: 14,
-              showBadge: true,
+              badgeCount: cartState is CartLoaded
+                  ? cartState.cart.cartContent.length
+                  : 0,
+              showBadge: cartState is CartLoaded &&
+                  cartState.cart.cartContent.isNotEmpty,
             ),
             CustomNavigationBarItem(
               icon: const Icon(Icons.more_horiz_outlined),

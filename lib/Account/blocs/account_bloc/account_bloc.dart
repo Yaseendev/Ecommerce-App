@@ -50,15 +50,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     });
 
     on<LoadUserProfileEvent>((event, emit) async {
-      // await accoountRepository.getUserData().then((value) {
-      //   value.fold(
-      //     (left) => emit(AccountError(left.message)),
-      //     (right) => emit(AccountLoggedIn(right)),
-      //   );
-      // }).onError((error, stackTrace) {
-      //   print('Error $error');
-      //   emit(AccountInitial());
-      // });
+      emit(AccountLoggedIn(event.user));
     });
 
     on<ResetPasswordEvent>((event, emit) async {

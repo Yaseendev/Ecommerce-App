@@ -64,7 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ));
         } else if (state is AccountLoggedIn) {
           // context.read<AddressBloc>().add(GetAllAddresses());
-          // context.read<CartBloc>().add(GetCart());
           // context.read<WishlistBloc>().add(GetWishList());
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             settings: RouteSettings(name: '/primary'),

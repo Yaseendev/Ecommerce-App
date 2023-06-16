@@ -9,6 +9,7 @@ class SearchCriteria {
   double? endPrice;
   RangeValues? ratingRange;
   SortOptions? selectedSort;
+  final Set<String> selectedBrands;
   
   SearchCriteria({
     required this.selectedCategories,
@@ -16,6 +17,7 @@ class SearchCriteria {
     this.endPrice,
     this.ratingRange,
     this.selectedSort,
+    required this.selectedBrands,
   });
 
   SearchCriteria copyWith({
@@ -24,6 +26,7 @@ class SearchCriteria {
     double? endPrice,
     RangeValues? ratingRange,
     SortOptions? selectedSort,
+    Set<String>? selectedBrands,
   }) {
     return SearchCriteria(
       selectedCategories: selectedCategories ?? this.selectedCategories,
@@ -31,6 +34,7 @@ class SearchCriteria {
       endPrice: endPrice ?? this.endPrice,
       ratingRange: ratingRange ?? this.ratingRange,
       selectedSort: selectedSort ?? this.selectedSort,
+      selectedBrands: selectedBrands ?? this.selectedBrands,
     );
   }
 
@@ -42,6 +46,7 @@ class SearchCriteria {
       if(ratingRange != null) 'startRating': ratingRange?.start,
       if(ratingRange != null) 'endRating': ratingRange?.end,
       if(selectedSort != null) 'sort': selectedSort?.name,
+      if(selectedBrands.isNotEmpty) 'brands': selectedBrands.join(','),
     };
   }
 

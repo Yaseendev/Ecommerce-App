@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
 import 'package:my_ecommerce/Utils/services/api_service.dart';
+import '../models/name.dart';
 import '../models/user.dart';
 
 class AccountNetworkProvider extends ApiService {
@@ -23,7 +24,6 @@ class AccountNetworkProvider extends ApiService {
         headers: {
           'Authorization': 'Bearer $token',
         },
-        
       ),
     );
     return response.data;
@@ -32,7 +32,7 @@ class AccountNetworkProvider extends ApiService {
   Future<Map<String, dynamic>> signin(String email, String password) async {
     final Response response = await dio.post(
       Urls.SIGNIN_API,
-      data: {     
+      data: {
         'email': email,
         'password': password,
       },
@@ -47,6 +47,23 @@ class AccountNetworkProvider extends ApiService {
       data: FormData.fromMap({
         'email': email,
       }),
+    );
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> edit(
+      String token, String email, Name name) async {
+    final Response response = await dio.post(
+      Urls.EDIT_USER,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+      data: {
+        'email': email,
+        ...name.toMap(),
+      },
     );
     return response.data;
   }
@@ -78,7 +95,7 @@ class AccountNetworkProvider extends ApiService {
                 switch (error.response!.statusCode) {
                   case 400:
                     try {
-                      networkException = error.response!.data['message'];
+                      networkException = error.response!.data.toString();
                     } catch (e) {
                       networkException = 'Somethig went wrong';
                     }

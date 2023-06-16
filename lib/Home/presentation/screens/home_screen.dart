@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_ecommerce/Address/blocs/addresses_bloc/addresses_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/new_products_bloc/newly_added_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/popular_bloc/popular_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/products_ads_bloc/products_ads_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:my_ecommerce/Home/presentation/widgets/most_popular_section.dart
 import 'package:my_ecommerce/Home/presentation/widgets/top_rated_view.dart';
 import 'package:my_ecommerce/Primary/blocs/categories_bloc/categories_bloc.dart';
 import 'package:my_ecommerce/Search/presentation/widgets/search_box.dart';
+import '../widgets/address_box.dart';
 import '../widgets/banner_view.dart';
 import '../widgets/categories_view.dart';
 import '../widgets/newly_added_view.dart';
@@ -34,9 +36,7 @@ class HomeScreen extends StatelessWidget {
           },
           initialVal: '',
         ),
-        // bottom: context.watch<AddressesBloc>().state is AddressesFetched
-        //       ? AddressBox()
-        //       : null,
+        bottom: AddressBox(),
       ),
       body: RefreshIndicator(
         onRefresh: () async {

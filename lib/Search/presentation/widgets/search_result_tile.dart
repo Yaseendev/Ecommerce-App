@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:my_ecommerce/Product/data/models/product.dart';
-import 'package:my_ecommerce/Product/presentatioin/screens/product_screen.dart';
+import 'package:my_ecommerce/Product/presentation/screens/product_screen.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
 
 class SearchResultTile extends StatelessWidget {

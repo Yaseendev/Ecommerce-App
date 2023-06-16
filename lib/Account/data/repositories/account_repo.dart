@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:my_ecommerce/Shared/models/network_failure.dart';
+import '../models/name.dart';
 import '../models/user.dart';
 import '../providers/account_db_provider.dart';
 import '../providers/account_network_provider.dart';
@@ -60,6 +61,18 @@ class AccountRepository {
       if (token == null) return Left(Failure('No Token'));
       final result = await _apiService.checkToken(token);
       final appUser = User.fromMap(result['user']);
+      await _databaseService.setUser(appUser);
+      return Right(appUser);
+    } catch (e) {
+      return Left(Failure(_apiService.getErrorMsg(e)));
+    }
+  }
+
+  Future<Either<Failure, User>> editUser(User user) async {
+    try {
+      final token = await _databaseService.getToken();
+      final result = await _apiService.edit(token ?? '', user.email, user.name);
+      final appUser = User.fromMap(result);
       await _databaseService.setUser(appUser);
       return Right(appUser);
     } catch (e) {

@@ -2,8 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Account/blocs/account_bloc/account_bloc.dart';
+import 'package:my_ecommerce/Primary/presentation/screens/primary_screen.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
-import 'package:sizer/sizer.dart';
+import '../widgets/account_screen_items.dart';
 import '../widgets/user_inf0_items.dart';
 import 'login_screen.dart';
 
@@ -12,7 +13,22 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AccountBloc, AccountState>(
+    return BlocConsumer<AccountBloc, AccountState>(
+      listener: (context, state) {
+        if (state is AccountLoggedout) {
+          //   context
+          //..read<AddressesBloc>().add(Reset())
+          // ..read<CartBloc>().add(ResetCart());
+          //..read<WishlistBloc>().add(ResetWishlist());
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  settings: RouteSettings(name: '/primary'),
+                  builder: (ctx) {
+                    return PrimaryScreen();
+                  }),
+              (route) => false);
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           body: SafeArea(
@@ -28,9 +44,8 @@ class AccountScreen extends StatelessWidget {
                   Center(
                     child: Image.asset(
                       Images.DEFAULT_PROFILE,
-                      width: 90.sp,
-                      height: 90.sp,
-                      color: AppColors.PRIMARY_COLOR,
+                      width: 100,
+                      height: 100,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -50,10 +65,15 @@ class AccountScreen extends StatelessWidget {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
+                            textAlign: TextAlign.center,
+                          ),
+                          style: TextButton.styleFrom(
+                            alignment: Alignment.center,
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => LoginScreen()));
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (_) => LoginScreen()));
                           },
                         ),
                   state is AccountLoggedIn
@@ -62,13 +82,13 @@ class AccountScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 20),
-                            UserInfoItems(),
+                             UserInfoItems(),
                           ],
                         )
                       : Container(),
-                  SizedBox(height: 20),
-                  //AccountScreenItems(),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                  const AccountScreenItems(),
+                  const SizedBox(height: 20),
                   state is AccountLoggedIn
                       ? Card(
                           elevation: 2,
@@ -87,9 +107,48 @@ class AccountScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            title: Text('Log Out'),
+                            title: const Text('Log Out'),
                             trailing:
                                 const Icon(Icons.arrow_forward_ios_rounded),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    title: Text('Log Out'),
+                                    content: Text(
+                                        'Are you sure you want to log out?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: Text('Log out'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ).then((value) {
+                                if (value != null && value) {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) => Center(
+                                      child:
+                                          CircularProgressIndicator.adaptive(),
+                                    ),
+                                  );
+                                  // context.read<AccountBloc>().add(Logout());
+                                }
+                              });
+                            },
                           ),
                         )
                       : Container(),

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Primary/blocs/category_bloc/category_bloc.dart';
 import 'package:my_ecommerce/Primary/data/models/category.dart';
-import 'package:my_ecommerce/Product/presentatioin/widgets/grid_products_view.dart';
-import 'package:my_ecommerce/Product/presentatioin/widgets/list_products_view.dart';
-import 'package:my_ecommerce/Product/presentatioin/widgets/loading/product_loading_widget.dart';
+import 'package:my_ecommerce/Product/presentation/widgets/grid_products_view.dart';
+import 'package:my_ecommerce/Product/presentation/widgets/list_products_view.dart';
+import 'package:my_ecommerce/Product/presentation/widgets/loading/product_loading_widget.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
+import 'package:my_ecommerce/Utils/enums.dart';
 
 class CategoryScreen extends StatefulWidget {
   final Category category;

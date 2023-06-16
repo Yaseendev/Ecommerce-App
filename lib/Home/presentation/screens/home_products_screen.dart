@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_ecommerce/Product/data/models/product.dart';
-import 'package:my_ecommerce/Product/presentatioin/widgets/grid_products_view.dart';
-import 'package:my_ecommerce/Product/presentatioin/widgets/list_products_view.dart';
+import 'package:my_ecommerce/Product/presentation/widgets/grid_products_view.dart';
+import 'package:my_ecommerce/Product/presentation/widgets/list_products_view.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
+import 'package:my_ecommerce/Utils/enums.dart';
 
 class HomeProductsScreen extends StatefulWidget {
   final String title;

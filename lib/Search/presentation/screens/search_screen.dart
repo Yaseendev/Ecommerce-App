@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_ecommerce/Primary/data/models/category.dart';
-import 'package:my_ecommerce/Product/presentatioin/widgets/loading/product_loading_widget.dart';
-import 'package:my_ecommerce/Search/bloc/search_bloc.dart';
+import 'package:my_ecommerce/Product/presentation/widgets/loading/product_loading_widget.dart';
+import 'package:my_ecommerce/Search/blocs/search_bloc/search_bloc.dart';
+import 'package:my_ecommerce/Search/data/models/search_criteria.dart';
 import 'package:my_ecommerce/Shared/widgets/error_view.dart';
 import 'package:my_ecommerce/Shared/widgets/no_internet_view.dart';
+import '../widgets/filter/filter_sheet.dart';
 import '../widgets/search_box.dart';
 import '../widgets/search_history_card.dart';
 import '../widgets/search_result_view.dart';
@@ -22,10 +24,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final Set<Category> selectedCategories = {};
+  //final Set<Category> selectedCategories = {};
 
   String? searchterm;
   late TextEditingController textController;
+  SearchCriteria? searchCriteria;
 
   @override
   void initState() {
@@ -59,28 +62,38 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: EdgeInsets.all(10)),
               child: Center(child: Icon(Icons.tune)),
               onPressed: () {
-                // showModalBottomSheet(
-                //   context: context,
-                //   isScrollControlled: true,
-                //   // useRootNavigator: true,
-                //   useSafeArea: true,
-                //   shape: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.vertical(
-                //       top: const Radius.circular(14),
-                //     ),
-                //   ),
-                //   builder: (ctx) {
-                //     return FilterSheet(
-                //       allBrands: <String>[
-                //         'Brand 1',
-                //         'Brand 2',
-                //         'Brand 3',
-                //         'Brand 4',
-                //         'Brand 5',
-                //       ],
-                //     );
-                //   },
-                // );
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  // useRootNavigator: true,
+                  useSafeArea: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: const Radius.circular(14),
+                    ),
+                  ),
+                  builder: (ctx) {
+                    return FilterSheet(
+                      searchCriteria: searchCriteria,
+                    );
+                  },
+                ).then((value) {
+                      if (value is SearchCriteria) {
+                        searchCriteria = value;
+                        if (textController.text.trim().isNotEmpty) {
+                          context.read<SearchBloc>().add(FetchSearchData(
+                              searchTxt: textController.text.trim(),
+                              searchCriteria: searchCriteria));
+                        }
+                      } else if (value is bool && !value) {
+                        searchCriteria = null;
+                        if (textController.text.trim().isNotEmpty) {
+                          context.read<SearchBloc>().add(FetchSearchData(
+                              searchTxt: textController.text.trim()));
+                        }
+                      }
+                      print('Searched ${value.runtimeType}');
+                    });
               },
             ),
           ],

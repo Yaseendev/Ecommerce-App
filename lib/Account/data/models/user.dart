@@ -21,7 +21,7 @@ class User extends Equatable {
 
   // final List<Address> addresses;
   // final List<Product> wishList;
-  // final Cart? cart;
+  //final Cart? cart;
 
   User({
     this.id,
@@ -58,7 +58,7 @@ class User extends Equatable {
       //     .map((e) => Product.fromMap(e))
       //     .toList(),
       // cart: map['cart'] == null
-      //     ? Cart(cartContent: [], total: 0, subtotal: 0)
+      //  ? Cart(cartContent: [], total: 0, subtotal: 0)
       //     : Cart.fromMap(map['cart']),
     );
   }
@@ -67,4 +67,18 @@ class User extends Equatable {
 
   factory User.fromJson(String source) =>
       User.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  User copyWith({
+    String? id,
+    Name? name,
+    String? email,
+    String? avatarUrl,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+    );
+  }
 }

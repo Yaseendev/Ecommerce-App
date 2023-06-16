@@ -3,14 +3,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_ecommerce/Account/data/models/user.dart';
 
 class Urls {
-  static const String DOMAIN =
-      'http://192.168.1.26:8080'; //ipconfig getsummary en0 | grep 192.168.1.
-  static const String LOCATION_DOMAIN = 'https://eu1.locationiq.com';
+  static const String DOMAIN = 'http://localhost:8080'; //ipconfig getsummary en0 | grep 192.168.1.
   static const String BASE_API = DOMAIN + '/api/v1';
-  static const String LOCATION_BASE_API = LOCATION_DOMAIN + '/v1';
   static const String AUTH_PATH = '/auth';
   static const String PRODUCT_PATH = '/products';
+  static const String CART_PATH = '/cart';
+  static const String WISHLIST_PATH = '/wishlist';
+  static const String USER_PATH = '/user';
   static const String GET_CATEGORIES = '/categories';
+  static const String ORDERS_PATH = '/orders';
   static const String SEARCH = '$PRODUCT_PATH/search';
   static const String SEARCH_FILTERED = '$PRODUCT_PATH/search-filtered';
   static const String DEAL_OF_DAY = '$PRODUCT_PATH/deal-of-day';
@@ -18,9 +19,32 @@ class Urls {
   static const String TOP_RATED = '$PRODUCT_PATH/most-rated';
   static const String NEWLY_ADDED = '$PRODUCT_PATH/newly-added';
   static const String PRODUCTS_ADS = '$PRODUCT_PATH/ads';
+  static const String PRODUCTS_BRANDS = '$PRODUCT_PATH/brands';
   static const String SIGNUP_API = '$AUTH_PATH/register';
   static const String SIGNIN_API = '$AUTH_PATH/signin';
   static const String TOKEN_CHECK_API = '$AUTH_PATH/token-check';
+  static const String EDIT_USER = '$USER_PATH/edit';
+  static const String GET_CART = '$CART_PATH/get-cart';
+  static const String ADD_CART = '$CART_PATH/add';
+  static const String ADD_CART_BULK = '$CART_PATH/add-all';
+  static const String UPDATE_CART = '$CART_PATH/update';
+  static const String REMOVE_CART = '$CART_PATH/remove';
+  static const String GET_WISHLIST = '$WISHLIST_PATH/get';
+  static const String ADD_WISHLIST = '$WISHLIST_PATH/add';
+  static const String REMOVE_WISHLIST = '$WISHLIST_PATH/remove';
+  static const String GET_ADDRESSES = '$USER_PATH/addresses';
+  static const String ADD_ADDRESS = '$GET_ADDRESSES/add';
+  static const String EDIT_ADDRESS = '$GET_ADDRESSES/edit';
+  static const String DELETE_ADDRESS = '$GET_ADDRESSES/delete';
+  static const String CHECKOUT = '$ORDERS_PATH/add';
+  static const String GET_ORDERS = '$ORDERS_PATH/get';
+  static const String CANCEL_ORDER = '$ORDERS_PATH/cancel';
+
+  ///Location Urls
+  static const String LOCATION_DOMAIN = 'https://eu1.locationiq.com';
+  static const String LOCATION_BASE_API = LOCATION_DOMAIN + '/v1';
+  static const String LOCATION_AUTOCOMPLETE = '/autocomplete.php';
+  static const String LOCATION_REVERSE = '/reverse.php';
 }
 
 const String locationKey = 'pk.0b821f869258d4129c196400ab4927f0';
@@ -40,17 +64,13 @@ class Boxes {
       return await Hive.openBox<String>('searchHistory');
   }
 
-  //   static Future<Box<CartItem>> getCartBox() async {
-  //   if (Hive.isBoxOpen('cart'))
-  //     return Hive.box<CartItem>('cart');
-  //   else
-  //     return await Hive.openBox<CartItem>('cart');
-  // }
+    static Future<Box> getAppDataBox() async {
+    if (Hive.isBoxOpen('appData'))
+      return Hive.box('appData');
+    else
+      return await Hive.openBox('appData');
+  }
 }
-
-enum PaymentMethod { cash, creditCard }
-
-enum ViewType { grid, List }
 
 class Images {
   static const String ROOT = 'assets/images';
@@ -62,6 +82,7 @@ class Images {
   static const String NO_INTERNET = '$ROOT/no-wifi.png';
   static const String WISHLIST = '$ROOT/wishlist.png';
   static const String NO_LOGIN = '$ROOT/login-svg.svg';
+  static const String EMPTY_CART = '$ROOT/empty_cart.png';
 }
 
 class AppColors {

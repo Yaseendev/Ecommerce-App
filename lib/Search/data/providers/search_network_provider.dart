@@ -17,6 +17,13 @@ class SearchNetworkProvider extends ApiService {
     );
     return response.data;
   }
+
+  Future<List<dynamic>> getSearchFilter() async {
+    final Response response = await dio.get(
+      Urls.PRODUCTS_BRANDS,
+    );
+    return response.data;
+  }
   
   @override //TODO: Refactor
   String getErrorMsg(Object error) {

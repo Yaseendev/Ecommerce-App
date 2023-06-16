@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/new_products_bloc/newly_added_bloc.dart';
-import 'package:my_ecommerce/Product/presentatioin/screens/product_screen.dart';
+import 'package:my_ecommerce/Product/presentation/screens/product_screen.dart';
 import 'package:my_ecommerce/Shared/widgets/open_container_wrapper.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
 import 'package:shimmer/shimmer.dart';

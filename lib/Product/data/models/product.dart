@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:my_ecommerce/Primary/data/models/category.dart';
 
 part 'product.g.dart';
 
 @HiveType(typeId: 3)
-class Product {
+class Product extends Equatable {
   @HiveField(0)
   final String id;
   @HiveField(1)
@@ -14,12 +15,10 @@ class Product {
   final num price;
   @HiveField(3)
   final List<String> images;
-  //final bool isOnSale;
   @HiveField(4)
   final num? salePercentage;
   @HiveField(5)
   final num? salePrice;
-  //final num regularPrice;
   @HiveField(6)
   final String desc;
   @HiveField(7)
@@ -32,6 +31,10 @@ class Product {
   final Category category;
   @HiveField(11)
   final double rating;
+  //@HiveField(12)
+  final String link;
+  // @HiveField(13)
+  // final num finalPrice;
 
   Product({
     required this.id,
@@ -40,13 +43,13 @@ class Product {
     this.images = const [],
     this.salePercentage,
     this.salePrice,
-    //required this.regularPrice,
     this.desc = '',
     this.isFav = false,
     required this.brand,
     this.thumbnail = '',
     required this.category,
     required this.rating,
+    this.link = '',
   });
 
   Product copyWith({
@@ -71,7 +74,6 @@ class Product {
       images: images ?? this.images,
       salePercentage: salePercentage ?? this.salePercentage,
       salePrice: salePrice ?? this.salePrice,
-      //regularPrice: regularPrice ?? this.regularPrice,
       desc: desc ?? this.desc,
       isFav: isFav ?? this.isFav,
       brand: brand ?? this.brand,
@@ -84,33 +86,32 @@ class Product {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'name': name,
+      'title': name,
       'price': price,
       'images': images,
-      'salePercentage': salePercentage,
-      'salePrice': salePrice,
-      //'regularPrice': regularPrice,
-      'desc': desc,
-      'isFav': isFav,
+      'discountPercentage': salePercentage,
+      'finalPrice': salePrice,
+      'description': desc,
       'brand': brand,
       'thumbnail': thumbnail,
       'category': category.toMap(),
-      'rating' : rating,
+      'rating': rating,
     };
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: map['_id'] ?? '',
+      id: map['id'] ?? '',
       name: map['title'] ?? '',
       price: map['price'] as num,
       images: List<String>.from((map['images'])),
       salePercentage: map['discountPercentage'] != null
           ? map['discountPercentage'] as num
           : null,
-      salePrice: map['discountPercentage'] != null
-          ? (map['price'] - (map['price'] * (map['discountPercentage'] / 100)))
-          : null,
+      salePrice: map['finalPrice'],
+      // map['discountPercentage'] != null
+      //     ? (map['price'] - (map['price'] * (map['discountPercentage'] / 100)))
+      //     : null,
       //regularPrice: map['regularPrice'] as num,
       desc: map['description'] ?? '',
       //isFav: map['isFav'] as bool,
@@ -118,6 +119,7 @@ class Product {
       thumbnail: map['thumbnail'] ?? '',
       category: Category.fromMap(map['category']),
       rating: map['rating'],
+      link: map['link'] ?? '',
     );
   }
 
@@ -142,4 +144,7 @@ class Product {
   String toString() {
     return 'Product(id: $id, name: $name, price: $price, images: $images, salePercentage: $salePercentage, salePrice: $salePrice, desc: $desc, isFav: $isFav, brand: $brand, thumbnail: $thumbnail)';
   }
+
+  @override
+  List<Object?> get props => [id, name];
 }

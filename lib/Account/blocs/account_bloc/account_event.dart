@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'account_bloc.dart';
 
 abstract class AccountEvent extends Equatable {
@@ -35,8 +36,14 @@ class SingInEvent extends AccountEvent {
 }
 
 class LoadUserProfileEvent extends AccountEvent {
+  final User user;
+
+  LoadUserProfileEvent({
+    required this.user,
+  });
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [user];
 }
 
 class ResetPasswordEvent extends AccountEvent {

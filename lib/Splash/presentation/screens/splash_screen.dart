@@ -24,7 +24,9 @@ class SplashScreen extends StatelessWidget {
                   }));
             }
            else if (state is InitrouteValidToken) {
-              context.read<AccountBloc>().add(LoadUserProfileEvent());
+              context.read<AccountBloc>().add(LoadUserProfileEvent(
+                user: state.user,
+              ));
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   settings: RouteSettings(name: '/primary'),
                   builder: (ctx) {
@@ -46,7 +48,7 @@ class SplashScreen extends StatelessWidget {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   settings: RouteSettings(name: '/primary'),
                   builder: (ctx) {
-                    return PrimaryScreen();
+                    return const PrimaryScreen();
                   }));
             }
           },

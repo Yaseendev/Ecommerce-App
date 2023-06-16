@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
+import 'package:my_ecommerce/Account/data/models/user.dart';
 import 'package:my_ecommerce/Account/data/repositories/account_repo.dart';
 import 'package:my_ecommerce/Utils/services/service_locator.dart';
 
@@ -22,7 +23,7 @@ class InitrouteBloc extends Bloc<InitrouteEvent, InitrouteState> {
                 (l) => l.message == 'No Token'
                     ? emit(InitrouteNoToken())
                     : emit(InitrouteInValidToken()),
-                (r) => emit(InitrouteValidToken()));
+                (r) => emit(InitrouteValidToken(user: r)));
           }).onError((error, stackTrace) {
             emit(InitrouteError());
           });

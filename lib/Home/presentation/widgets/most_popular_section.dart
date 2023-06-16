@@ -73,6 +73,7 @@ class MostPopularSection extends StatelessWidget {
                             child: HomeItemCard(
                               product: prod,
                               width: double.maxFinite,
+                              fromHome: true,
                             ),
                           ))
                       .toList()

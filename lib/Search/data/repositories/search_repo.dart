@@ -39,6 +39,15 @@ class SearchRepository {
     }
   }
 
+    Future<Either<Failure, List<String>>> fetchSearchFilter() async {
+    try {
+      final result = await _apiService.getSearchFilter();
+      return Right(result.map((e) => e.toString()).toList());
+    } catch (e) {
+      return Left(Failure(_apiService.getErrorMsg(e)));
+    }
+  }
+
   Future<Either<Failure, ValueListenable<Box<String>>>>
       fetchSearchHistory() async {
     try {

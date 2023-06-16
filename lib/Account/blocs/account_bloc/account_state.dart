@@ -35,3 +35,5 @@ class AccountLoading extends AccountState {
 class AccountEmailSent extends AccountState {
 
 }
+
+class AccountLoggedout extends AccountState {}

@@ -6,6 +6,7 @@ import 'package:my_ecommerce/Account/blocs/account_bloc/account_bloc.dart';
 import 'package:my_ecommerce/Product/data/models/product.dart';
 import 'package:my_ecommerce/Shared/widgets/dialogs.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
+import 'package:my_ecommerce/Wishlist/bloc/wishlist_bloc.dart';
 
 class ProductHomeHCard extends StatelessWidget {
   final Product product;
@@ -26,13 +27,14 @@ class ProductHomeHCard extends StatelessWidget {
         // )));
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.only(left: 8, bottom: 8),
         child: SizedBox(
           width: 145,
           child: Stack(
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14),
@@ -119,29 +121,58 @@ class ProductHomeHCard extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.topRight,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(0),
-                    shape: MaterialStateProperty.all(
-                      CircleBorder(),
-                    ),
-                    padding: MaterialStateProperty.all(EdgeInsets.all(8)),
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                  ),
-                  onPressed: () {
-                    if (context.read<AccountBloc>().state is AccountLoggedIn) {
-                      // context.read<WishlistBloc>().add(isWishlisted
-                      //     ? RemoveFromlist(product.id)
-                      //     : AddToWishlist(product));
-                    } else {
-                      showLoginDialog(
-                          context, 'add this item to your wishlist');
-                    }
+                child: BlocBuilder<WishlistBloc, WishlistState>(
+                  builder: (context, state) {
+                    final bool isWishlisted = state is WishlistLoaded &&
+                                state.products
+                                    .any((element) => element.id == product.id);
+
+                    return ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all(0),
+                        shape: MaterialStateProperty.all(
+                          CircleBorder(),
+                        ),
+                        padding: MaterialStateProperty.all(EdgeInsets.all(8)),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                      ),
+                      onPressed: () {
+                        if (context.read<AccountBloc>().state
+                            is AccountLoggedIn) {
+                          context.read<WishlistBloc>().add(isWishlisted
+                              ? RemoveFromlist(product.id)
+                              : AddToWishlist(product));
+                        } else {
+                          showLoginDialog(
+                              context, 'add this item to your wishlist');
+                        }
+                      },
+                      child: state is WishlistLoading &&
+                                      state.productId == product.id
+                                  ? SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator.adaptive(
+                                        strokeWidth: 3,
+                                      ),
+                                    )
+                                  : Icon(
+                                      isWishlisted
+                                          ? Icons.favorite_rounded
+                                          : state.products != null && state.products!.any((element) => element.id == product.id)
+                                              ? Icons.favorite_rounded
+                                              : Icons.favorite_outline_rounded,
+                                      color: isWishlisted
+                                          ? Colors.red
+                                          : state.products != null && state.products!.any((element) => element.id == product.id)
+                                              ? Colors.red
+                                              : Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .color,),
+                    );
                   },
-                  child: Icon(
-                    Icons.favorite_outline_rounded,
-                    color: Theme.of(context).textTheme.bodyLarge!.color,
-                  ),
                 ),
               ),
             ],
