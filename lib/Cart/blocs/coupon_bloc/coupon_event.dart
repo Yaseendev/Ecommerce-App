@@ -15,3 +15,9 @@ class CheckCoupon extends CouponEvent {
   @override
   List<Object> get props => [code];
 }
+
+class RemoveCoupon extends CouponEvent {
+
+  @override
+  List<Object> get props => [];
+}

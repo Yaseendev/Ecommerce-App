@@ -5,6 +5,7 @@ import 'package:my_ecommerce/Account/presentation/screens/account_screen.dart';
 import 'package:my_ecommerce/Address/blocs/addresses_bloc/addresses_bloc.dart';
 import 'package:my_ecommerce/Address/blocs/location_bloc/location_bloc.dart';
 import 'package:my_ecommerce/Cart/blocs/cart_bloc/cart_bloc.dart';
+import 'package:my_ecommerce/Cart/blocs/coupon_bloc/coupon_bloc.dart';
 import 'package:my_ecommerce/Cart/presentation/screens/cart_screen.dart';
 import 'package:my_ecommerce/Home/blocs/new_products_bloc/newly_added_bloc.dart';
 import 'package:my_ecommerce/Home/blocs/popular_bloc/popular_bloc.dart';
@@ -89,6 +90,7 @@ class _PrimaryScreenState extends State<PrimaryScreen>
         BlocProvider<ProductsAdsBloc>(
           create: (context) => ProductsAdsBloc()..add(FetchAds()),
         ),
+        
       ],
       child: Scaffold(
         resizeToAvoidBottomInset: false,

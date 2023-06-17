@@ -41,7 +41,7 @@ class Cart {
       'cartContent': cartContent.map((e) => e.toMapForAdd()).toList(),
       'total': total,
       'subtotal': subtotal,
-      'coupon': coupon,
+      if(coupon != null) 'coupon': coupon?.toMap(),
     };
   }
 
@@ -52,9 +52,9 @@ class Cart {
           .toList(),
       total: double.parse(map['total'].toString()),
       subtotal: double.parse(map['subtotal'].toString()),
-      // coupon: map['coupon_discount_totals'] is List<dynamic>
-      //     ? null
-      //     : Coupon.fromMap(map['coupon_discount_totals']),
+      coupon: map['coupon'] == null
+          ? null
+          : Coupon.fromMap(map['coupon']),
     );
   }
 

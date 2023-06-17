@@ -12,6 +12,7 @@ class Urls {
   static const String USER_PATH = '/user';
   static const String GET_CATEGORIES = '/categories';
   static const String ORDERS_PATH = '/orders';
+  static const String COUPON_PATH = '/coupon';
   static const String SEARCH = '$PRODUCT_PATH/search';
   static const String SEARCH_FILTERED = '$PRODUCT_PATH/search-filtered';
   static const String DEAL_OF_DAY = '$PRODUCT_PATH/deal-of-day';
@@ -39,6 +40,7 @@ class Urls {
   static const String CHECKOUT = '$ORDERS_PATH/add';
   static const String GET_ORDERS = '$ORDERS_PATH/get';
   static const String CANCEL_ORDER = '$ORDERS_PATH/cancel';
+  static const String REMOVE_COUP_CART = '$COUPON_PATH/remove';
 
   ///Location Urls
   static const String LOCATION_DOMAIN = 'https://eu1.locationiq.com';

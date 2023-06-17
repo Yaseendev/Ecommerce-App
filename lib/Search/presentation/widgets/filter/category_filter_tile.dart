@@ -20,10 +20,17 @@ class CategoryFilterTile extends StatelessWidget {
       secondary: ClipRRect(
         borderRadius: BorderRadius.circular(14),
         child: FadeInImage.assetNetwork(
+          fit: BoxFit.fill,
           image: category.imgUrl,
           height: 80,
           width: 80,
           placeholder: Images.PLACEHOLDER,
+          imageErrorBuilder: (context, error, stackTrace) => Image.asset(
+            Images.PLACEHOLDER,
+            height: 80,
+            width: 80,
+            fit: BoxFit.fill,
+          ),
         ),
       ),
       value: value,

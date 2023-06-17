@@ -71,37 +71,37 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     });
 
-    on<CartRemoveCoupon>((event, emit) async {
-      if (await connectivity.checkConnectivity() != ConnectivityResult.none) {
-        emit(CartLoading());
-        await _cartRepo.removeCoupon(event.c).then((res) {
-          res.fold((left) => emit(CartError(left.message)), (right) {
-            emit(CartLoaded(right));
-          });
-        }).onError((error, stackTrace) {
-          print(error);
-          emit(CartError(error.toString()));
-        });
-      } else {
-        emit(CartNoInternet());
-      }
-    });
+    // on<CartRemoveCoupon>((event, emit) async {
+    //   if (await connectivity.checkConnectivity() != ConnectivityResult.none) {
+    //     emit(CartLoading());
+    //     await _cartRepo.removeCoupon(event.c).then((res) {
+    //       res.fold((left) => emit(CartError(left.message)), (right) {
+    //         emit(CartLoaded(right));
+    //       });
+    //     }).onError((error, stackTrace) {
+    //       print(error);
+    //       emit(CartError(error.toString()));
+    //     });
+    //   } else {
+    //     emit(CartNoInternet());
+    //   }
+    // });
 
-    on<CartApplyCoupon>((event, emit) async {
-      if (await connectivity.checkConnectivity() != ConnectivityResult.none) {
-        emit(CartLoading());
-        await _cartRepo.applyCoupon(event.c).then((res) {
-          res.fold((left) => emit(CartError(left.message)), (right) {
-            emit(CartLoaded(right));
-          });
-        }).onError((error, stackTrace) {
-          print(error);
-          emit(CartError(error.toString()));
-        });
-      } else {
-        emit(CartNoInternet());
-      }
-    });
+    // on<CartApplyCoupon>((event, emit) async {
+    //   if (await connectivity.checkConnectivity() != ConnectivityResult.none) {
+    //     emit(CartLoading());
+    //     await _cartRepo.applyCoupon(event.c).then((res) {
+    //       res.fold((left) => emit(CartError(left.message)), (right) {
+    //         emit(CartLoaded(right));
+    //       });
+    //     }).onError((error, stackTrace) {
+    //       print(error);
+    //       emit(CartError(error.toString()));
+    //     });
+    //   } else {
+    //     emit(CartNoInternet());
+    //   }
+    // });
 
     on<CartUpdate>((event, emit) async {
        //emit(CartLoading());

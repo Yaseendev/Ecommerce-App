@@ -11,11 +11,13 @@ import 'package:my_ecommerce/Cart/blocs/cart_bloc/cart_bloc.dart';
 import 'package:my_ecommerce/Cart/data/models/cart.dart';
 import 'package:my_ecommerce/Order/blocs/checkout_bloc/checkout_bloc.dart';
 import 'package:my_ecommerce/Order/blocs/order_bloc/order_bloc.dart';
+import 'package:my_ecommerce/Order/blocs/orders_bloc/orders_bloc.dart';
 import 'package:my_ecommerce/Order/data/models/order.dart';
+import 'package:my_ecommerce/Order/presentations/screens/orders_screens.dart';
 import 'package:my_ecommerce/Utils/constants.dart';
 import 'package:my_ecommerce/Utils/enums.dart';
 import '../widgets/paywith_listview.dart';
-import 'package:intl/intl.dart' as  intl;
+import 'package:intl/intl.dart' as intl;
 
 class CheckoutScreen extends StatefulWidget {
   final Cart cart;
@@ -287,9 +289,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                     Text(
                       intl.NumberFormat.simpleCurrency(name: 'EGP')
-                                  .format(widget.cart.subtotal)
-                                  .split('.00')
-                                  .first,
+                          .format(widget.cart.subtotal)
+                          .split('.00')
+                          .first,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
@@ -311,7 +313,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ),
                           Text(
-                            '- ${widget.cart.coupon!.value} EGP',
+                            '- ${intl.NumberFormat.simpleCurrency(name: 'EGP').format(widget.cart.coupon!.value).split('.00').first}',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
@@ -330,10 +332,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         fontSize: 16,
                       ),
                     ),
-                    Text(intl.NumberFormat.simpleCurrency(name: 'EGP')
-                                  .format(widget.cart.subtotal)
-                                  .split('.00')
-                                  .first,
+                    Text(
+                      intl.NumberFormat.simpleCurrency(name: 'EGP')
+                          .format(widget.cart.total)
+                          .split('.00')
+                          .first,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
@@ -348,13 +351,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       context.read<CartBloc>().add(ClearCart());
                       Navigator.of(context).popUntil(
                           (route) => route.settings.name == '/primary');
+                      final GlobalKey key = GlobalKey();
                       CoolAlert.show(
+                        key: key,
                         context: context,
                         type: CoolAlertType.success,
                         title: 'Order Placed',
                         text: 'Your order is on the way',
                         animType: CoolAlertAnimType.slideInUp,
                         backgroundColor: Colors.transparent,
+                        confirmBtnText: 'View My Orders',
+                        onConfirmBtnTap: () {
+                          print(key.currentContext);
+                          Navigator.of(key.currentContext!).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (_) => BlocProvider<OrdersBloc>(
+                                      create: (context) =>
+                                          OrdersBloc()..add(GetOrders()),
+                                      child: OrdersScreen())));
+                        },
+                        closeOnConfirmBtnTap: false,
                       );
                     } else if (state is CheckoutFailed) {
                       ScaffoldMessenger.of(context)

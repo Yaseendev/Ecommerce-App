@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Order/blocs/order_bloc/order_bloc.dart';
 import 'package:my_ecommerce/Order/data/models/order.dart';
 import 'package:my_ecommerce/Utils/enums.dart';
+import 'package:intl/intl.dart' as intl;
 
 class BottomOrderDetailsCard extends StatelessWidget {
   final Order order;
@@ -41,13 +42,33 @@ class BottomOrderDetailsCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${order.cart.subtotal}',
+                  '${intl.NumberFormat.simpleCurrency(name: 'EGP').format(order.cart.subtotal).split('.00').first}',
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 5),
+            order.cart.coupon == null
+                ? Container()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Voucher ${order.cart.coupon?.name} disscount',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                      Text(
+                        '- ${intl.NumberFormat.simpleCurrency(name: 'EGP').format(order.cart.coupon!.value).split('.00').first}',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
             const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +81,7 @@ class BottomOrderDetailsCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${order.cart.total}',
+                  '${intl.NumberFormat.simpleCurrency(name: 'EGP').format(order.cart.total).split('.00').first}',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,

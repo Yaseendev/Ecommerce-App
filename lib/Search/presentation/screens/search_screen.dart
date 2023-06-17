@@ -48,7 +48,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 onController: (controller) {
                   textController = controller;
                 },
-                onPress: (value) {},
+                onPress: (value) {
+                  if (textController.text.trim().isNotEmpty) {
+                    context.read<SearchBloc>().add(FetchSearchData(
+                        searchTxt: textController.text.trim(),
+                        searchCriteria: searchCriteria));
+                  }
+                },
                 initialVal: searchterm,
                 fromHome: false,
               ),
@@ -78,22 +84,22 @@ class _SearchScreenState extends State<SearchScreen> {
                     );
                   },
                 ).then((value) {
-                      if (value is SearchCriteria) {
-                        searchCriteria = value;
-                        if (textController.text.trim().isNotEmpty) {
-                          context.read<SearchBloc>().add(FetchSearchData(
-                              searchTxt: textController.text.trim(),
-                              searchCriteria: searchCriteria));
-                        }
-                      } else if (value is bool && !value) {
-                        searchCriteria = null;
-                        if (textController.text.trim().isNotEmpty) {
-                          context.read<SearchBloc>().add(FetchSearchData(
-                              searchTxt: textController.text.trim()));
-                        }
-                      }
-                      print('Searched ${value.runtimeType}');
-                    });
+                  if (value is SearchCriteria) {
+                    searchCriteria = value;
+                    if (textController.text.trim().isNotEmpty) {
+                      context.read<SearchBloc>().add(FetchSearchData(
+                          searchTxt: textController.text.trim(),
+                          searchCriteria: searchCriteria));
+                    }
+                  } else if (value is bool && !value) {
+                    searchCriteria = null;
+                    if (textController.text.trim().isNotEmpty) {
+                      context.read<SearchBloc>().add(FetchSearchData(
+                          searchTxt: textController.text.trim()));
+                    }
+                  }
+                  print('Searched ${value.runtimeType}');
+                });
               },
             ),
           ],

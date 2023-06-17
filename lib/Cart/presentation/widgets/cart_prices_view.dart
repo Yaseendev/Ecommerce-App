@@ -50,7 +50,7 @@ class CartPricesView extends StatelessWidget {
                   ? state.cart.coupon == null
                       ? Container()
                       : Text(
-                          'Disscount:  - ${state.cart.coupon!.value.toStringAsFixed(2)} EGP',
+                          'Disscount:  - ${intl.NumberFormat.simpleCurrency(name: 'EGP').format(state.cart.coupon!.value).split('.00').first}',
                           style: TextStyle(
                             fontSize: 18,
                           ),

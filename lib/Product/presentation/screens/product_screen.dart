@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_ecommerce/Account/blocs/account_bloc/account_bloc.dart';
 import 'package:my_ecommerce/Cart/blocs/cart_item_bloc/cart_item_bloc.dart';
+import 'package:my_ecommerce/Cart/blocs/coupon_bloc/coupon_bloc.dart';
 import 'package:my_ecommerce/Cart/data/models/cart_item.dart';
 import 'package:my_ecommerce/Primary/blocs/category_bloc/category_bloc.dart';
 import 'package:my_ecommerce/Product/data/models/product.dart';
@@ -189,8 +190,13 @@ class _ProductScreenState extends State<ProductScreen> {
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: BlocProvider<CartItemBloc>(
-          create: (context) => CartItemBloc(context),
+        floatingActionButton: MultiBlocProvider(
+          providers: [
+            BlocProvider<CartItemBloc>(
+              create: (context) => CartItemBloc(context),
+            ),
+           
+          ],
           child: CartButtonsSection(
             onPress: (ctx) {
               ctx.read<CartItemBloc>().add(AddItemToCart(

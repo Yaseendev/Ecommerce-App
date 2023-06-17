@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Cart/blocs/cart_bloc/cart_bloc.dart';
 import 'package:my_ecommerce/Cart/blocs/cart_item_bloc/cart_item_bloc.dart';
+import 'package:my_ecommerce/Cart/blocs/coupon_bloc/coupon_bloc.dart';
 import 'package:my_ecommerce/Cart/presentation/screens/cart_screen.dart';
 
 class CartButtonsSection extends StatelessWidget {
@@ -55,15 +56,9 @@ class CartButtonsSection extends StatelessWidget {
                             child: IconButton(
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) =>
-                                        // BlocProvider<CouponBloc>(
-                                        //       create: (context) => CouponBloc(),
-                                        //       child:
-                                        CartScreen(
-                                      fromHome: false,
-                                    ),
-                                    //)
-                                  ));
+                                      builder: (_) => CartScreen(
+                                        fromHome: false,
+                                      )));
                                 },
                                 icon: Icon(
                                   Icons.shopping_cart_outlined,

@@ -73,31 +73,28 @@ class CartNetworkProvider extends ApiService {
   }
 
   Future<Map<String, dynamic>> applyCoupon(String token, String c) async {
-    final Response response = await dio.post(
-      'Urls.APPLY_COUP_CART',
+    final Response response = await dio.get(
+      Urls.COUPON_PATH,
       options: Options(
         headers: {
           'Authorization': 'Bearer $token',
         },
       ),
-      data: FormData.fromMap({
-        'coupon': c,
-      }),
+      queryParameters: {
+        'code': c,
+      },
     );
     return response.data;
   }
 
-  Future<Map<String, dynamic>> removeCoupon(String token, String c) async {
+  Future<Map<String, dynamic>> removeCoupon(String token) async {
     final Response response = await dio.post(
-      'Urls.REMOVE_COUP_CART',
+      Urls.REMOVE_COUP_CART,
       options: Options(
         headers: {
           'Authorization': 'Bearer $token',
         },
       ),
-      data: FormData.fromMap({
-        'coupon': c,
-      }),
     );
     return response.data;
   }

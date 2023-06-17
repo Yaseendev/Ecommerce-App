@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_ecommerce/Account/blocs/account_bloc/account_bloc.dart';
 import 'package:my_ecommerce/Cart/blocs/cart_bloc/cart_bloc.dart';
+import 'package:my_ecommerce/Cart/blocs/coupon_bloc/coupon_bloc.dart';
 import 'package:my_ecommerce/Cart/data/models/cart.dart';
 import 'package:my_ecommerce/Order/blocs/checkout_bloc/checkout_bloc.dart';
 import 'package:my_ecommerce/Product/presentation/widgets/loading/product_loading_widget.dart';
@@ -10,6 +11,8 @@ import 'package:my_ecommerce/Utils/constants.dart';
 import 'dart:math' as math;
 import '../widgets/cart_item_card.dart';
 import '../widgets/cart_prices_view.dart';
+import '../widgets/coupon_card.dart';
+import '../widgets/coupon_field.dart';
 import '../widgets/empty_cart_view.dart';
 import '../widgets/to_checkout_button.dart';
 import 'checkout_screen.dart';
@@ -27,6 +30,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   bool isLoading = false;
+  final CouponBloc couponBloc = CouponBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -64,16 +68,14 @@ class _CartScreenState extends State<CartScreen> {
                             ? () {
                                 if (context.read<AccountBloc>().state
                                     is AccountLoggedIn) {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              BlocProvider<CheckoutBloc>(
-                                                create: (context) =>
-                                                    CheckoutBloc(),
-                                                child: CheckoutScreen(
-                                                  cart: state.cart,
-                                                ),
-                                              )));
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) =>
+                                          BlocProvider<CheckoutBloc>(
+                                            create: (context) => CheckoutBloc(),
+                                            child: CheckoutScreen(
+                                              cart: state.cart,
+                                            ),
+                                          )));
                                 } else {
                                   showLoginDialog(
                                       context, 'continue to checkout');
@@ -137,34 +139,72 @@ class _CartScreenState extends State<CartScreen> {
                                         // ],
                                       ),
                                     ),
-                                   if(context.watch<AccountBloc>().state is AccountLoggedIn)
-                                    BlocListener<CouponBloc, CouponState>(
-                                      listener: (context, cState) {
-                                        if (cState is CouponApplied) {
-                                          context
-                                              .read<CartBloc>()
-                                              .add(SetCart(cState.cart));
-                                        } else if (cState
-                                            is CouponFailed) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text(cState.msg)));
-                                        }
-                                      },
-                                      child: state.cart.coupon == null
-                                          ? CouponField(
-                                              onApply: (value) {
-                                                context
-                                                    .read<CouponBloc>()
-                                                    .add(ApplyCoupon(
-                                                        couponName:
-                                                            value));
-                                              },
-                                            )
-                                          : CouponCard(
-                                              state.cart.coupon!),
-                                    ),
+                                    if (context.watch<AccountBloc>().state
+                                        is AccountLoggedIn)
+                                      BlocListener<CouponBloc, CouponState>(
+                                        bloc: couponBloc,
+                                        listener: (context, cState) {
+                                          if (cState is CouponValid) {
+                                              context.read<CartBloc>().add(
+                                                      SetCart(cState.cart));
+                                            
+                                          } else if (cState is CouponFailed) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(cState.msg)));
+                                          } else if (cState
+                                              is CouponNoInternet) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                leading: Icon(
+                                                  Icons.error,
+                                                  color: Colors.white,
+                                                ),
+                                                title: Text(
+                                                  'No Internet Connection',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            ));
+                                          } else if (cState is CouponFailed) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: ListTile(
+                                                contentPadding: EdgeInsets.zero,
+                                                leading: Icon(
+                                                  Icons.error,
+                                                  color: Colors.white,
+                                                ),
+                                                title: Text(
+                                                  cState.msg,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            ));
+                                          }
+                                        },
+                                        child: BlocProvider<CouponBloc>(
+                                          create: (context) => couponBloc,
+                                       child: state.cart.coupon == null
+                                            ? CouponField(
+                                                onApply: (value) {
+                                                  couponBloc
+                                                      .add(CheckCoupon(
+                                                          value.trim()));
+                                                },
+                                              )
+                                            : CouponCard(state.cart.coupon!)),
+                                      ),
                                     SafeArea(
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
